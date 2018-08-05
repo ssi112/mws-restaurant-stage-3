@@ -20,15 +20,18 @@ const  connect = require('gulp-connect');
  *
  */
 gulp.task('js', function() {
-   return gulp.src('src/js/*.js')
+   return gulp.src(['src/js/*.js', 'src/lib/*.js'])
       // no concat
       // .pipe(concat('rest_review_min.js'))
       .pipe(uglify())
-      // keep same names - too many changes to src
-      // .pipe(rename({ suffix: '_min' }))
       .pipe(gulp.dest('public/js'));
 });
 
+gulp.task('lib', function() {
+   return gulp.src(['src/lib/*.js'])
+      .pipe(uglify())
+      .pipe(gulp.dest('public/lib'));
+});
 
 // copy html and js from root of src to root of public
 gulp.task('copy-root-files', function() {
@@ -109,6 +112,7 @@ gulp.task('connect', function () {
 gulp.task('default',
     [
       'js',
+      'lib',
       'copy-root-files',
       'css',
       'responsive-img',
