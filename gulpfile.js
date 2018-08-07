@@ -27,11 +27,6 @@ gulp.task('js', function() {
       .pipe(gulp.dest('public/js'));
 });
 
-gulp.task('lib', function() {
-   return gulp.src(['src/lib/*.js'])
-      .pipe(uglify())
-      .pipe(gulp.dest('public/lib'));
-});
 
 // copy html and js from root of src to root of public
 gulp.task('copy-root-files', function() {
@@ -112,7 +107,6 @@ gulp.task('connect', function () {
 gulp.task('default',
     [
       'js',
-      'lib',
       'copy-root-files',
       'css',
       'responsive-img',
