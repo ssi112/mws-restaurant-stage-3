@@ -334,25 +334,19 @@ class DBHelper {
             store.put(restaurant);
           });
       });
-
     // update the server data...
-    // note this event is registered as a sync event to handle
-    // offline case
     DBHelper.updateIsFavoriteAPI(restaurantID, is_favorite);
   }
+
 
   /*
    * event listener setup in service worker to catch offline cases
    */
   static updateIsFavoriteAPI(restaurantID, is_favorite) {
     let putURL = `${DBHelper.DATABASE_URL}/${restaurantID}/?is_favorite=${is_favorite}`;
-
-    navigator.serviceWorker.ready.then(function(registerSync) {
-      registerSync.sync.register(`favorite/${restaurantID}/?is_favorite=${is_favorite}`);
-    });
     console.log(`updateIsFavoriteAPI: pre-fetch: ${putURL}`);
 
-    /*
+    /* */
     return new Promise(function(resolve, reject) {
       fetch(putURL, {method: 'PUT'})
       .then(() => {
@@ -364,7 +358,7 @@ class DBHelper {
         reject(false);
       });
     });
-    */
+    /* */
   }
 
 

@@ -198,7 +198,8 @@ createRestaurantHTML = (restaurant) => {
  */
 function createIsFavoriteButton(restID, is_favorite) {
   let button = document.createElement("button");
-  button.setAttribute("id", "isYourFavorite");
+  // make button id unique for aria accessibility
+  button.setAttribute("id", `isYourFavorite${restID}`);
   button.setAttribute("title", "My Favorite Restaurants!");
   button.innerHTML = "&#9829;"; // &#9829; html entity = heart '❤'
 

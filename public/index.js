@@ -11,11 +11,3 @@ if ("serviceWorker" in navigator) {
       console.log("Service Worker registration failed: ", err);
     });
 }
-
-
-// register sync event
-/*
-navigator.serviceWorker.ready.then(function(registerSync) {
-  return registerSync.sync.register("updateIsFavoriteAPI");
-});
-*/

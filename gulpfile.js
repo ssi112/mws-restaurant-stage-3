@@ -16,6 +16,7 @@ const rename = require('gulp-rename');
 // working with live reload for testing
 const  connect = require('gulp-connect');
 
+
 /*
  *
  */
@@ -24,6 +25,7 @@ gulp.task('js', function() {
       // no concat
       // .pipe(concat('rest_review_min.js'))
       .pipe(uglify())
+      .on('error', console.error.bind(console))
       .pipe(gulp.dest('public/js'));
 });
 
@@ -39,6 +41,7 @@ gulp.task('copy-root-files', function() {
 gulp.task('css', function() {
    gulp.src('src/css/*.css')
       .pipe(minify())
+      .on('error', console.error.bind(console))
       .pipe(gulp.dest('public/css'));
 });
 

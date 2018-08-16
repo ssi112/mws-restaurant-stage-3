@@ -2,10 +2,6 @@
  * serviceworker.js for restaurant review (rrv)
  */
 
-if (typeof dbh === "undefined") {
-  self.importScripts('js/dbhelper.js');
-}
-
 var RRV_CACHE = "rest-review-cache-v4";
 var RRV_CACHE_URLS = [
   '/',  // include the root
@@ -148,26 +144,3 @@ self.addEventListener("activate", function(event) {
   );
 });
 
-
-/*
- * add event listener to service worker to listen for sync event
- * if a rejected promise is returned to sync event, then browser will
- * queue the event to be tried again
- */
-/*
-self.addEventListener("sync", function(event) {
-  if(event.tag === "updateIsFavoriteAPI") {
-    event.waitUntil( DBHelper.updateIsFavoriteAPI() );
-  }
-});
-*/
-self.addEventListener("sync", function(event) {
-  if (event.tag.startsWith("favorite")) {
-    event.waitUntil(function() {
-      let restID = event.tag.slice(8);
-      let putURL = `${DBHelper.DATABASE_URL}/${restID}`;
-      console.log(`SW PUT: ${putURL}`);
-      return fetch(putURL, {method: 'PUT'});
-    });
-  }
-});

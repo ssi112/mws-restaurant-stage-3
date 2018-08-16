@@ -6,7 +6,7 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-	font-size: 18px;
+	font-size:18px;
   overflow: auto;
   display:grid;
   grid-template-columns: auto;
@@ -194,7 +194,7 @@ nav h1 a {
 }
 
 /* button to turn on/off favorite restaurant */
-#isYourFavorite {
+.isFavorite, .isNotFavorite {
   background: white;
   font-size: 40px;
   margin: 5px;
@@ -211,13 +211,13 @@ nav h1 a {
 }
 
 .isFavorite:hover {
-  color: #d3d3d3; /* light gray */
-  border-color: #d3d3d3;
+  color: #000; /* light gray #d3d3d3; */
+  border-color: ##000;
 }
 
 .isNotFavorite {
-  color: #d3d3d3;
-  border-color: #d3d3d3;
+  color: #000;
+  border-color: #000;
 }
 
 .isNotFavorite:hover {
