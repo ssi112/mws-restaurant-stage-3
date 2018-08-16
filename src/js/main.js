@@ -203,6 +203,9 @@ function createIsFavoriteButton(restID, is_favorite) {
   button.setAttribute("title", "My Favorite Restaurants!");
   button.innerHTML = "&#9829;"; // &#9829; html entity = heart '❤'
 
+  // test to make sure we are getting booleans
+  // console.log(`restID ${restID} typeof is_favorite = ${typeof is_favorite}`);
+
   if( is_favorite ) {
     button.setAttribute("class", "isFavorite");
     button.setAttribute("aria-pressed", "true");

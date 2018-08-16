@@ -330,12 +330,12 @@ class DBHelper {
         let store = tx.objectStore(dbRestaurantOBJECTSTORE);
         store.get(restaurantID)
           .then(restaurant => {
-            restaurant.is_favorite = is_favorite;
+            restaurant.is_favorite = Boolean(is_favorite);
             store.put(restaurant);
           });
       });
     // update the server data...
-    DBHelper.updateIsFavoriteAPI(restaurantID, is_favorite);
+    DBHelper.updateIsFavoriteAPI(restaurantID, Boolean(is_favorite));
   }
 
 
