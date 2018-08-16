@@ -1,0 +1,28 @@
+Google Maps & Geocode API Key:
+AIzaSyCnQHqMZYr7srjtBHwxUzmr662MDI3Ru-U
+
+Entire script string in both index.html and restaurant.html:
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnQHqMZYr7srjtBHwxUzmr662MDI3Ru-U&libraries=places&callback=initMap"></script>
+
+MWS Announcement:
+At least until June 11th, you can get around the API requirement for the JavaScript API, by making the API requests for the project without using an API key. That's done by removing the API key from the request to the Google API in `index.html` and `restaurant.html`:
+
+```<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script>```
+
+becomes
+
+```<script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap"></script>```
+
+Please note that this will only work until June 11th. Afterwards, will need your own key.
+
+Google Maps Platform:
+https://developers.google.com/maps/documentation/geocoding/start
+
+
+Geocode - added on August 2, 2018
+
+https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=YOUR_API_KEY
+
+https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyCnQHqMZYr7srjtBHwxUzmr662MDI3Ru-U
+
