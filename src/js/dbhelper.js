@@ -355,10 +355,35 @@ class DBHelper {
       })
       .catch((err) => {
         console.log(` PUT: restaurantID: ${restaurantID} : is_favorite: ${is_favorite} \n Fetch Error: ${err}`);
-        reject(false);
+        // most likely offline, in any case put in local storage for later update
+        DBHelper.storeFavoriteTillOnline(restaurantID, putURL);
+        // reject(false);
       });
     });
     /* */
+  }
+
+  /*
+   * store the put url in local storage - update when back online
+   */
+  static storeFavoriteTillOnline(restaurantID, putURL) {
+    console.log(`storeFavoriteTillOnline: ${putURL}`);
+    localStorage.setItem(restaurantID, putURL);
+    // add event listener for back online to try again
+    window.addEventListener('online', event => {
+      console.log('online event, yay!');
+      let favURL = "";
+      // get from local storage and update API
+      Object.keys(localStorage).forEach( key => {
+        favURL = localStorage.getItem(key);
+        console.log(favURL);
+        fetch(favURL, {method: 'PUT'});
+      });
+      // remove items from local storage
+      Object.keys(localStorage).forEach( key => {
+        localStorage.removeItem(key);
+      });
+    });
   }
 
 

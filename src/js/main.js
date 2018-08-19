@@ -187,7 +187,23 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more);
 
-  const isFavButton = createIsFavoriteButton(restaurant.id, restaurant.is_favorite);
+  const isFavButton = createIsFavoriteButton(restaurant.id, Boolean(restaurant.is_favorite));
+
+  /* move onclick here to set restaurant mem variable */
+  isFavButton.onclick = () => {
+    if (isFavButton.getAttribute('aria-pressed') === 'false') {
+      isFavButton.setAttribute("class", "isFavorite");
+      isFavButton.setAttribute("aria-pressed", "true");
+      isFavButton.setAttribute("aria-label", "mark this as not a favorite");
+    } else {
+      isFavButton.setAttribute("class", "isNotFavorite");
+      isFavButton.setAttribute("aria-pressed", "false");
+      isFavButton.setAttribute("aria-label", "mark this as a favorite");
+    }
+    restaurant.is_favorite = !restaurant.is_favorite;
+    DBHelper.updateIsFavorite(restaurant.id, restaurant.is_favorite);
+  };
+
   li.append(isFavButton);
 
   return li;
@@ -196,17 +212,18 @@ createRestaurantHTML = (restaurant) => {
 /*
  * creates the is favorite button
  */
-function createIsFavoriteButton(restID, is_favorite) {
+function createIsFavoriteButton(restID, is_fav) {
   let button = document.createElement("button");
+
   // make button id unique for aria accessibility
   button.setAttribute("id", `isYourFavorite${restID}`);
   button.setAttribute("title", "My Favorite Restaurants!");
   button.innerHTML = "&#9829;"; // &#9829; html entity = heart '❤'
 
   // test to make sure we are getting booleans
-  // console.log(`restID ${restID} typeof is_favorite = ${typeof is_favorite}`);
+  // console.log(`restID ${restID} typeof is_fav = ${typeof is_fav} value ${is_fav}`);
 
-  if( is_favorite ) {
+  if( is_fav ) {
     button.setAttribute("class", "isFavorite");
     button.setAttribute("aria-pressed", "true");
     button.setAttribute("aria-label", "mark this as not a favorite");
@@ -215,20 +232,6 @@ function createIsFavoriteButton(restID, is_favorite) {
     button.setAttribute("aria-pressed", "false");
     button.setAttribute("aria-label", "mark this as a favorite");
   }
-
-  button.onclick = () => {
-      if (button.getAttribute('aria-pressed') === 'false') {
-        button.setAttribute("class", "isFavorite");
-        button.setAttribute("aria-pressed", "true");
-        button.setAttribute("aria-label", "mark this as not a favorite");
-      } else {
-        button.setAttribute("class", "isNotFavorite");
-        button.setAttribute("aria-pressed", "false");
-        button.setAttribute("aria-label", "mark this as a favorite");
-      }
-      // alert(`pressed favorite state = ${button.getAttribute('aria-pressed')}`);
-      DBHelper.updateIsFavorite(restID, !is_favorite);
-    };
   return button;
 }
 

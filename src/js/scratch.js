@@ -1,18 +1,4 @@
 /*
- * 1) register sync event p137
- *    can be ran from page
- * 2) add event listener to SW listen for sync event
- *    sync even retries until it succeeds
- *
- *    accessing sync mgr differs depending on being called from SW or page p139
- *
- * 3) function that sync mgr calls is our fetch/put to update server db
- *
- *  example: https://ponyfoo.com/articles/backgroundsync
- */
-
-
-/*
  * Check connection Status
  *  navigator.onLine only knows if the user can’t connect to a LAN or router -
  *  it doesn’t know if the the user can actually connect to the internet
@@ -30,4 +16,94 @@ function isOnline () {
 window.addEventListener('online', isOnline);
 window.addEventListener('offline', isOnline);
 isOnline();
+
+// -------------------------------
+/*
+GET Endpoints
+
+Get all restaurants
+
+http://localhost:1337/restaurants/
+
+Get favorite restaurants
+
+http://localhost:1337/restaurants/?is_favorite=true
+
+Get a restaurant by id
+
+http://localhost:1337/restaurants/<restaurant_id>
+
+Get all reviews for a restaurant
+
+http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
+
+Get all restaurant reviews
+
+http://localhost:1337/reviews/
+
+Get a restaurant review by id
+
+http://localhost:1337/reviews/<review_id>
+
+Get all reviews for a restaurant
+
+http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
+
+// -------------------------------
+POST Endpoints
+
+Create a new restaurant review
+
+http://localhost:1337/reviews/
+
+Parameters
+
+{
+    "restaurant_id": <restaurant_id>,
+    "name": <reviewer_name>,
+    "rating": <rating>,
+    "comments": <comment_text>
+}
+
+// -------------------------------
+PUT Endpoints
+
+Favorite a restaurant
+
+http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=true
+
+Unfavorite a restaurant
+
+http://localhost:1337/restaurants/<restaurant_id>/?is_favorite=false
+
+Update a restaurant review
+
+http://localhost:1337/reviews/<review_id>
+
+Parameters
+
+{
+    "name": <reviewer_name>,
+    "rating": <rating>,
+    "comments": <comment_text>
+}
+
+DELETE Endpoints
+Delete a restaurant review
+
+http://localhost:1337/reviews/<review_id>
+*/
+
+const element = document.getElementById('div');
+
+if (element.getAttribute('listener') !== 'true') {
+     element.addEventListener('click', function (e) {
+         const elementClicked = e.target;
+         elementClicked.setAttribute('listener', 'true');
+         console.log('event has been attached');
+    });
+}
+
+// works in Chrome not FireFox
+// getEventListeners(window);
 
