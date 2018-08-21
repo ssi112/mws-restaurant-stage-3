@@ -1,6 +1,7 @@
 let restaurants,
   neighborhoods,
-  cuisines;
+  cuisines,
+  allIDs;   // restaurant IDs see fillRestaurantsHTML()
 var newMap;
 var markers = [];
 var apiKey = config.MapBoxKey;
@@ -142,6 +143,14 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
     ul.append(createRestaurantHTML(restaurant));
   });
   addMarkersToMap();
+
+
+  // !!!!! PRELIMINARY WORK TO GET REVIEWS !!!!!
+  // put all active restaurants IDs into an array
+  allIDs = restaurants.map(rest_id => rest_id.id);
+  console.log(`main.js:fillRestaurantsHTML(): allIDs[] = ${allIDs}`);
+  // pass this to DBHelper.getAndStoreAllReviews(allIDs);
+
 }
 
 /*
@@ -187,7 +196,7 @@ createRestaurantHTML = (restaurant) => {
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more);
 
-  const isFavButton = createIsFavoriteButton(restaurant.id, Boolean(restaurant.is_favorite));
+  const isFavButton = createIsFavoriteButton(restaurant.id, restaurant.is_favorite);
 
   /* move onclick here to set restaurant mem variable */
   isFavButton.onclick = () => {
@@ -200,8 +209,20 @@ createRestaurantHTML = (restaurant) => {
       isFavButton.setAttribute("aria-pressed", "false");
       isFavButton.setAttribute("aria-label", "mark this as a favorite");
     }
-    restaurant.is_favorite = !restaurant.is_favorite;
-    DBHelper.updateIsFavorite(restaurant.id, restaurant.is_favorite);
+
+    // booleans in IDB, fetch/PUT converts them to strings, pain in the arse
+    let isFavOrNot = false;
+    if(typeof restaurant.is_favorite === 'boolean') {
+      // switch it!
+      isFavOrNot = !restaurant.is_favorite;
+    } else if (typeof restaurant.is_favorite === 'string') {
+      // if 'false' evaluates to true (bool)
+      // if 'true' evalueates to false (bool)
+      // effectively switching the value
+      isFavOrNot = (restaurant.is_favorite == "false");
+    }
+    restaurant.is_favorite = isFavOrNot;
+    DBHelper.updateIsFavorite(restaurant.id,  restaurant.is_favorite);
   };
 
   li.append(isFavButton);
@@ -220,10 +241,11 @@ function createIsFavoriteButton(restID, is_fav) {
   button.setAttribute("title", "My Favorite Restaurants!");
   button.innerHTML = "&#9829;"; // &#9829; html entity = heart '❤'
 
-  // test to make sure we are getting booleans
+  // test to see the type
   // console.log(`restID ${restID} typeof is_fav = ${typeof is_fav} value ${is_fav}`);
+  is_fav = is_fav.toString();
 
-  if( is_fav ) {
+  if( is_fav == "true" ) {
     button.setAttribute("class", "isFavorite");
     button.setAttribute("aria-pressed", "true");
     button.setAttribute("aria-label", "mark this as not a favorite");

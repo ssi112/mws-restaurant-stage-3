@@ -166,7 +166,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 /**
  * Create all reviews HTML and add them to the webpage
  *
- * calle by fillRestaurantHTML
+ * called by fillRestaurantHTML
  */
 fillReviewsHTML = (error, reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');

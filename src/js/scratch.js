@@ -45,9 +45,6 @@ Get a restaurant review by id
 
 http://localhost:1337/reviews/<review_id>
 
-Get all reviews for a restaurant
-
-http://localhost:1337/reviews/?restaurant_id=<restaurant_id>
 
 // -------------------------------
 POST Endpoints
@@ -107,3 +104,20 @@ if (element.getAttribute('listener') !== 'true') {
 // works in Chrome not FireFox
 // getEventListeners(window);
 
+// get review data loaded into IDB
+
+// call from main.js -> fillRestaurantsHTML()
+// line 136
+restaurants = self.restaurants;
+
+// loop over restaurants in memory
+// fetch the reviews for each one
+// put into IDB
+restaurants.forEach(restaurant => {
+  console.log(restaurant.id);
+});
+
+
+for(let i = 0; i < allRestaurants.length; i++) {
+  console.log(allRestaurants[i].id);
+}

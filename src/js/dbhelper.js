@@ -8,10 +8,11 @@
  *
  */
 
-
+/*
 if (typeof idb === "undefined") {
   self.importScripts('js/idb.js');
 }
+*/
 
 /*
  * filled by call to getNeighborhoodsCuisinesSelect
@@ -73,7 +74,7 @@ class DBHelper {
   }
 
   /*
-   * takes the data from the API (data) and stores it in IDB
+   * takes the restaurangt data from the API and stores it in IDB
    */
   static storeAllInIDB(data) {
     return DBHelper.openIDB().then(function(db) {
@@ -89,8 +90,7 @@ class DBHelper {
   }
 
   /*
-   * fetches data from API
-   * then stores it in IDB
+   * fetches restaurant data from API and sends it to be stored in IDB
    */
   static getFromAPIsaveToIDB() {
     return fetch(DBHelper.DATABASE_URL)
@@ -108,7 +108,6 @@ class DBHelper {
   static getAllFromIDB() {
     return DBHelper.openIDB().then(function(db){
       if(!db) return;
-
       var store = db.transaction(dbRestaurantOBJECTSTORE).objectStore(dbRestaurantOBJECTSTORE);
       // console.log(store); // testing
       return store.getAll();
@@ -184,6 +183,10 @@ class DBHelper {
    * keeping with my naming convention, functions i've added begin with
    * get vs fetch...same thing
    * get a restaurant's reviews by ID
+   *
+   * called from restaurant_info.js -> fillRestaurantHTML()
+   *
+   * !!! get 1st from IDB, 2nd from API !!!
    */
   static getRestaurantReviewsById(id, callback) {
     let getURL = DBHelper.DATABASE_REVIEWS_URL + id;
@@ -330,12 +333,12 @@ class DBHelper {
         let store = tx.objectStore(dbRestaurantOBJECTSTORE);
         store.get(restaurantID)
           .then(restaurant => {
-            restaurant.is_favorite = Boolean(is_favorite);
+            restaurant.is_favorite = is_favorite;
             store.put(restaurant);
           });
       });
     // update the server data...
-    DBHelper.updateIsFavoriteAPI(restaurantID, Boolean(is_favorite));
+    DBHelper.updateIsFavoriteAPI(restaurantID, is_favorite);
   }
 
 
