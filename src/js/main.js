@@ -145,11 +145,17 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   addMarkersToMap();
 
 
-  // !!!!! PRELIMINARY WORK TO GET REVIEWS !!!!!
+  /* ----------------------------------------------------------------------
+   *
+   * !!!!! PRELIMINARY WORK TO GET REVIEWS !!!!!
+   *
+   * ----------------------------------------------------------------------
+   */
   // put all active restaurants IDs into an array
-  allIDs = restaurants.map(rest_id => rest_id.id);
-  console.log(`main.js:fillRestaurantsHTML(): allIDs[] = ${allIDs}`);
-  // pass this to DBHelper.getAndStoreAllReviews(allIDs);
+  allRestaurantIDs = restaurants.map(rest_id => rest_id.id);
+  // console.log(`main.js:fillRestaurantsHTML(): allRestaurantIDs[] = ${allRestaurantIDs}`);
+  // load the reviews for each restaurant
+  DBHelper.getAndStoreAllReviews(allRestaurantIDs);
 
 }
 

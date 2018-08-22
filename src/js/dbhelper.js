@@ -402,6 +402,50 @@ class DBHelper {
     return marker;
   }
 
-}
+  /* ----------------------------------------------------------------------
+   *
+   * !!!!! PRELIMINARY WORK TO GET REVIEWS INTO IDB AND BEYOND !!!!!
+   *
+   * allRestaurantIDs - array of rest IDs
+   * ----------------------------------------------------------------------
+   */
+   static getAndStoreAllReviews(allRestaurantIDs) {
+    allRestaurantIDs.forEach( id => {
+      DBHelper.getReviewsFromAPIsaveToIDB(id);
+    });
+   }
 
+
+  /*
+   * fetches restaurant review data from API and stores it in IDB
+   */
+  static getReviewsFromAPIsaveToIDB(id) {
+    let reviewURL = `${DBHelper.DATABASE_REVIEWS_URL}${id}`;
+    return fetch(reviewURL)
+      .then(function(response){
+        return response.json();
+    }).then(reviews => {
+      DBHelper.storeAllReviewsInIDB(reviews);
+      return reviews;
+    });
+  }
+
+
+  /*
+   * takes the restaurangt data from the API and stores it in IDB
+   */
+  static storeAllReviewsInIDB(reviewData) {
+    return DBHelper.openIDB().then(function(db) {
+      if(!db) return;
+
+      var tx = db.transaction(dbReviewsOBJECTSTORE, 'readwrite');
+      var store = tx.objectStore(dbReviewsOBJECTSTORE);
+      reviewData.forEach(function(review) {
+        store.put(review);
+      });
+      return tx.complete;
+    });
+  }
+
+} // end class DBHelper
 self.DBHelper = DBHelper;
