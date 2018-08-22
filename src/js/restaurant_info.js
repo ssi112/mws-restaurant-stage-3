@@ -207,7 +207,7 @@ createReviewHTML = (review) => {
 
   const review_date = document.createElement('h2');
   review_date.className = 'align-right';
-  review_date.innerHTML = review.date;
+  review_date.innerHTML = convertTimeStamp(review.updatedAt);
   div.appendChild(review_date);
 
   const br = document.createElement('br');
@@ -225,6 +225,26 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
+}
+
+/*
+ * convert timestamp for date display
+ * refer to https://www.w3schools.com/jsref/jsref_obj_date.asp
+ * only returns the date string
+ *
+ * simpler solution example but not much formatting:
+ * console.log(new Date(1504095567183).toLocaleDateString());
+ */
+function convertTimeStamp(TimeStamp) {
+  let monthsLong = ['January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'];
+  // convert unix to milliseconds: unixTimeStamp * 1000
+  let jsDate = new Date(TimeStamp);
+  let month = jsDate.getMonth();  // 0 to 11
+  let dayOfWeek = jsDate.getDay(); // 0 to 6
+  let dayOfMonth = jsDate.getDate(); // 1 to 31
+  let year = jsDate.getFullYear();
+  return `${monthsLong[month]} ${dayOfMonth}, ${year}`;
 }
 
 /**
