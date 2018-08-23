@@ -4,6 +4,7 @@
  * curl "http://localhost:1337/restaurants/{3}"
  *
  * Relies on Jake Archibald's IndexedDB Promise library
+ * https://github.com/jakearchibald/idb
  * found in js/idb.js
  *
  */
@@ -68,6 +69,7 @@ class DBHelper {
         case 2: { // stage 3
           var reviewStore = upgradeDb.createObjectStore(dbReviewsOBJECTSTORE, { keyPath: 'id' });
           reviewStore.createIndex('reviewID', 'id');
+          reviewStore.createIndex('restID', 'restaurant_id');
         }
       } // switch
     });
@@ -176,32 +178,6 @@ class DBHelper {
         }
       }
     });
-  }
-
-
-  /* -----------------------------------------------------------------------
-   * keeping with my naming convention, functions i've added begin with
-   * get vs fetch...same thing
-   * get a restaurant's reviews by ID
-   *
-   * called from restaurant_info.js -> fillRestaurantHTML()
-   *
-   * !!! get 1st from IDB, 2nd from API !!!
-   */
-  static getRestaurantReviewsById(id, callback) {
-    let getURL = DBHelper.DATABASE_REVIEWS_URL + id;
-    // console.log(`getURL = ${getURL}`);
-
-    fetch(getURL).then(response => {
-      // if (!response.clone().ok && !response.clone().redirected) {
-      if (!response.ok) {
-        console.log(`Problem retrieving reviews: ${response.statusText}`);
-      }
-      response.json()
-        .then(reviews => {
-          callback(null, reviews);
-        })
-    }).catch(error => callback(error, null));
   }
 
 
@@ -432,7 +408,7 @@ class DBHelper {
 
 
   /*
-   * takes the restaurangt data from the API and stores it in IDB
+   * takes the restaurant data from the API and stores it in IDB
    */
   static storeAllReviewsInIDB(reviewData) {
     return DBHelper.openIDB().then(function(db) {
@@ -444,6 +420,50 @@ class DBHelper {
         store.put(review);
       });
       return tx.complete;
+    });
+  }
+
+
+  /* -----------------------------------------------------------------------
+   * get a restaurant's reviews by ID
+   * get 1st from IDB, if no data then try to get it from API
+   *
+   * called from restaurant_info.js -> fillRestaurantHTML()
+   *
+   */
+  static getRestaurantReviewsById(id, callback) {
+    DBHelper.getReviewFromIDB(id)
+      .then(restReviews => {
+        console.log(restReviews);
+      });
+
+    let getURL = DBHelper.DATABASE_REVIEWS_URL + id;
+    // console.log(`getURL = ${getURL}`);
+
+    fetch(getURL).then(response => {
+      // if (!response.clone().ok && !response.clone().redirected) {
+      if (!response.ok) {
+        console.log(`Problem retrieving reviews: ${response.statusText}`);
+      }
+      response.json()
+        .then(reviews => {
+          callback(null, reviews);
+        })
+    }).catch(error => callback(error, null));
+  }
+
+
+  /*
+   * gets all review data from IDB for given restaurant
+   */
+  static getReviewFromIDB(restaurant_id) {
+    return DBHelper.openIDB().then(function(db){
+      if(!db) return null;
+      var store = db.transaction(dbReviewsOBJECTSTORE)
+                    .objectStore(dbReviewsOBJECTSTORE);
+      // console.log(store); // testing
+      let restIDIdx = store.index('restID');
+      return restIDIdx.getAll(restaurant_id);
     });
   }
 
