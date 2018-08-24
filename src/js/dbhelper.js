@@ -427,29 +427,31 @@ class DBHelper {
   /* -----------------------------------------------------------------------
    * get a restaurant's reviews by ID
    * get 1st from IDB, if no data then try to get it from API
-   *
    * called from restaurant_info.js -> fillRestaurantHTML()
    *
    */
   static getRestaurantReviewsById(id, callback) {
     DBHelper.getReviewFromIDB(id)
       .then(restReviews => {
-        console.log(restReviews);
+        if(restReviews.length) {
+          console.log(`DBHelper.getReviewFromIDB(id)=${id}`);
+          callback(null, restReviews);
+        } else {
+            let getURL = DBHelper.DATABASE_REVIEWS_URL + id;
+            fetch(getURL).then(response => {
+              if (!response.ok) {
+                console.log(`Problem retrieving reviews: ${response.statusText}`);
+              }
+              response.json()
+                .then(reviews => {
+                  console.log(`fetch(getURL)=${getURL}`);
+                  callback(null, reviews);
+                })
+            }).catch(error => callback(error, null));
+        }
+        // console.log(restReviews);
+        // callback(null, restReviews);
       });
-
-    let getURL = DBHelper.DATABASE_REVIEWS_URL + id;
-    // console.log(`getURL = ${getURL}`);
-
-    fetch(getURL).then(response => {
-      // if (!response.clone().ok && !response.clone().redirected) {
-      if (!response.ok) {
-        console.log(`Problem retrieving reviews: ${response.statusText}`);
-      }
-      response.json()
-        .then(reviews => {
-          callback(null, reviews);
-        })
-    }).catch(error => callback(error, null));
   }
 
 
