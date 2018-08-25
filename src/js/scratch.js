@@ -121,3 +121,47 @@ restaurants.forEach(restaurant => {
 for(let i = 0; i < allRestaurants.length; i++) {
   console.log(allRestaurants[i].id);
 }
+
+/* ------------------------------------------------------------------------
+ * TESTING: REVIEWS_IDB
+ *
+ * ONLINE:
+ *  All working - no errors or warnings
+ *  CSS
+ *    restaurant_info.js - adjust review headings and ratings for smaller
+ *    displays sizes
+ *
+ * Some info messages displaying - can hide them
+ *  updateIsFavoriteAPI
+ *  DBHelper.getReviewFromIDB(id)=2
+ *
+ * OFFLINE:
+ *  All working - some expected errors/warning displayed
+ *    Get: net::ERR_INTERNET_DISCONNECTED
+ *
+ *    Leaflet - maps are not cached (could do this, but not required)
+ *
+ *    Catch the following and display message *** DONE ***
+ *    Uncaught in promise Type: Failed to fetch
+ *      getReviewsFromAPIsaveToIDB
+ *
+ *    is_favorites
+ *      online/offline only works if you stay on the page
+ *      turn offline
+ *      toggle favorite switch
+ *      navigate to details page
+ *      return to main page
+ *      turn online - EVENT NEVER FIRES
+ *      data sits in local storage
+
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          may want to rework this
+          navigator.onLine
+      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    storeFavoriteTillOnline() *** DONE ***
+      moved local storage code to it's own function
+      can call it independently
+
+   ------------------------------------------------------------------------ */
+

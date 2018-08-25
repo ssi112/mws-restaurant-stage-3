@@ -341,20 +341,30 @@ class DBHelper {
   static storeFavoriteTillOnline(restaurantID, putURL) {
     console.log(`storeFavoriteTillOnline: ${putURL}`);
     localStorage.setItem(restaurantID, putURL);
+
     // add event listener for back online to try again
+
     window.addEventListener('online', event => {
       console.log('online event, yay!');
-      let favURL = "";
       // get from local storage and update API
-      Object.keys(localStorage).forEach( key => {
-        favURL = localStorage.getItem(key);
-        console.log(favURL);
-        fetch(favURL, {method: 'PUT'});
-      });
-      // remove items from local storage
-      Object.keys(localStorage).forEach( key => {
-        localStorage.removeItem(key);
-      });
+      DBHelper.moveLocalStorageToAPI();
+    });
+  }
+
+
+  /* -------------------------------------------------------------------------
+   * move any data stored in local storage to API
+   */
+  static moveLocalStorageToAPI() {
+    let favURL = "";
+    Object.keys(localStorage).forEach( key => {
+      favURL = localStorage.getItem(key);
+      console.log(favURL);
+      fetch(favURL, {method: 'PUT'});
+    });
+    // remove items from local storage
+    Object.keys(localStorage).forEach( key => {
+      localStorage.removeItem(key);
     });
   }
 
@@ -391,11 +401,14 @@ class DBHelper {
   static getReviewsFromAPIsaveToIDB(id) {
     let reviewURL = `${DBHelper.DATABASE_REVIEWS_URL}${id}`;
     return fetch(reviewURL)
-      .then(function(response){
+      .then(function(response) {
         return response.json();
     }).then(reviews => {
       DBHelper.storeAllReviewsInIDB(reviews);
       return reviews;
+    })
+    .catch((err) => {
+      console.log(`getReviewsFromAPIsaveToIDB():Error: ${err}`);
     });
   }
 
