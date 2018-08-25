@@ -10,12 +10,6 @@
  */
 
 /*
-if (typeof idb === "undefined") {
-  self.importScripts('js/idb.js');
-}
-*/
-
-/*
  * filled by call to getNeighborhoodsCuisinesSelect
  * used in select lists to filter restaurants
  */
@@ -76,22 +70,6 @@ class DBHelper {
   }
 
   /*
-   * takes the restaurangt data from the API and stores it in IDB
-   */
-  static storeAllInIDB(data) {
-    return DBHelper.openIDB().then(function(db) {
-      if(!db) return;
-
-      var tx = db.transaction(dbRestaurantOBJECTSTORE, 'readwrite');
-      var store = tx.objectStore(dbRestaurantOBJECTSTORE);
-      data.forEach(function(restaurant) {
-        store.put(restaurant);
-      });
-      return tx.complete;
-    });
-  }
-
-  /*
    * fetches restaurant data from API and sends it to be stored in IDB
    */
   static getFromAPIsaveToIDB() {
@@ -103,6 +81,24 @@ class DBHelper {
       return restaurants;
     });
   }
+
+
+  /*
+   * takes the restaurant data from the API and stores it in IDB
+   */
+  static storeAllInIDB(data) {
+    return DBHelper.openIDB().then(function(db) {
+      if(!db)
+        return;
+      var tx = db.transaction(dbRestaurantOBJECTSTORE, 'readwrite');
+      var store = tx.objectStore(dbRestaurantOBJECTSTORE);
+      data.forEach(function(restaurant) {
+        store.put(restaurant);
+      });
+      return tx.complete;
+    });
+  }
+
 
   /*
    * gets all the retaurant data from IDB
@@ -243,7 +239,6 @@ class DBHelper {
       callback(null, restaurantNeighborhoods);
       return;
     }
-
     // Fetch all restaurants in order to prefill restaurantNeighborhoods
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -263,7 +258,6 @@ class DBHelper {
       callback(null, restaurantCuisines);
       return;
     }
-
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -296,7 +290,7 @@ class DBHelper {
     }
   }
 
-  /*
+  /* --------------------------------------------------------------------------
    * called from main.js: createIsFavoriteButton()
    * updates IDB first and then backend server
    *
@@ -318,13 +312,13 @@ class DBHelper {
   }
 
 
-  /*
-   * event listener setup in service worker to catch offline cases
+  /* -------------------------------------------------------------------------
+   * Updates the API, catch offline or failed fetch/PUT and store in local
+   * storage until the online event triggers
    */
   static updateIsFavoriteAPI(restaurantID, is_favorite) {
     let putURL = `${DBHelper.DATABASE_URL}/${restaurantID}/?is_favorite=${is_favorite}`;
     console.log(`updateIsFavoriteAPI: pre-fetch: ${putURL}`);
-
     /* */
     return new Promise(function(resolve, reject) {
       fetch(putURL, {method: 'PUT'})
@@ -336,13 +330,12 @@ class DBHelper {
         console.log(` PUT: restaurantID: ${restaurantID} : is_favorite: ${is_favorite} \n Fetch Error: ${err}`);
         // most likely offline, in any case put in local storage for later update
         DBHelper.storeFavoriteTillOnline(restaurantID, putURL);
-        // reject(false);
       });
     });
     /* */
   }
 
-  /*
+  /* -------------------------------------------------------------------------
    * store the put url in local storage - update when back online
    */
   static storeFavoriteTillOnline(restaurantID, putURL) {
@@ -379,8 +372,7 @@ class DBHelper {
   }
 
   /* ----------------------------------------------------------------------
-   *
-   * !!!!! PRELIMINARY WORK TO GET REVIEWS INTO IDB AND BEYOND !!!!!
+   * WORK TO GET REVIEWS INTO IDB AND BEYOND !!!!!
    *
    * allRestaurantIDs - array of rest IDs
    * ----------------------------------------------------------------------
@@ -392,8 +384,9 @@ class DBHelper {
    }
 
 
-  /*
+  /* ----------------------------------------------------------------------
    * fetches restaurant review data from API and stores it in IDB
+   * NEED TO CATCH IF OFFLINE
    */
   static getReviewsFromAPIsaveToIDB(id) {
     let reviewURL = `${DBHelper.DATABASE_REVIEWS_URL}${id}`;
@@ -407,13 +400,13 @@ class DBHelper {
   }
 
 
-  /*
+  /* -----------------------------------------------------------------------
    * takes the restaurant data from the API and stores it in IDB
    */
   static storeAllReviewsInIDB(reviewData) {
     return DBHelper.openIDB().then(function(db) {
-      if(!db) return;
-
+      if(!db)
+        return;
       var tx = db.transaction(dbReviewsOBJECTSTORE, 'readwrite');
       var store = tx.objectStore(dbReviewsOBJECTSTORE);
       reviewData.forEach(function(review) {
@@ -428,7 +421,6 @@ class DBHelper {
    * get a restaurant's reviews by ID
    * get 1st from IDB, if no data then try to get it from API
    * called from restaurant_info.js -> fillRestaurantHTML()
-   *
    */
   static getRestaurantReviewsById(id, callback) {
     DBHelper.getReviewFromIDB(id)
@@ -455,7 +447,7 @@ class DBHelper {
   }
 
 
-  /*
+  /* ----------------------------------------------------------------------
    * gets all review data from IDB for given restaurant
    */
   static getReviewFromIDB(restaurant_id) {

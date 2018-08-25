@@ -143,25 +143,22 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
     ul.append(createRestaurantHTML(restaurant));
   });
   addMarkersToMap();
-
-
   /* ----------------------------------------------------------------------
-   *
-   * !!!!! PRELIMINARY WORK TO GET REVIEWS !!!!!
-   *
-   * ----------------------------------------------------------------------
+   * Get the reviews and store them in IDB so they are ready to work if
+   * app goes offline. Could move this to restaurant_info.js and store them
+   * only if called for a particular restaurant. This has them ready for
+   * offline first, though.
    */
   // put all active restaurants IDs into an array
   allRestaurantIDs = restaurants.map(rest_id => rest_id.id);
   // console.log(`main.js:fillRestaurantsHTML(): allRestaurantIDs[] = ${allRestaurantIDs}`);
   // load the reviews for each restaurant
   DBHelper.getAndStoreAllReviews(allRestaurantIDs);
-
 }
+
 
 /*
  * Create restaurant HTML
- *
  * stage 3: added is favorites button
  */
 createRestaurantHTML = (restaurant) => {
@@ -170,8 +167,6 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img lazyload';
 
-  // ORIGINAL
-  // image.src = DBHelper.imageUrlForRestaurant(restaurant);
   // this creates the default (smallest) image
   image.src = defaultImgSRC(restaurant);
 
@@ -181,7 +176,6 @@ createRestaurantHTML = (restaurant) => {
   // added for accessibility
   image.alt = `image of ${restaurant.name}`;
   image.title = `You could be dining at ${restaurant.name}`;
-  // added for accessibility
 
   li.append(image);
 
@@ -204,7 +198,7 @@ createRestaurantHTML = (restaurant) => {
 
   const isFavButton = createIsFavoriteButton(restaurant.id, restaurant.is_favorite);
 
-  /* move onclick here to set restaurant mem variable */
+  /* moved onclick here to set restaurant mem variable */
   isFavButton.onclick = () => {
     if (isFavButton.getAttribute('aria-pressed') === 'false') {
       isFavButton.setAttribute("class", "isFavorite");
@@ -236,7 +230,7 @@ createRestaurantHTML = (restaurant) => {
   return li;
 }
 
-/*
+/* -----------------------------------------------------------------------
  * creates the is favorite button
  */
 function createIsFavoriteButton(restID, is_fav) {
@@ -264,7 +258,7 @@ function createIsFavoriteButton(restID, is_fav) {
 }
 
 
-/*
+/* -----------------------------------------------------------------------
  * images stored in DB server as 1.jpg, 2.jpg, etc
  * DBHelper function returns /img/1.jpg
  * convert to the smallest default image size
