@@ -104,7 +104,7 @@ class DBHelper {
    * gets all the retaurant data from IDB
    */
   static getAllFromIDB() {
-    return DBHelper.openIDB().then(function(db){
+    return DBHelper.openIDB().then(function(db) {
       if(!db) return;
       var store = db.transaction(dbRestaurantOBJECTSTORE).objectStore(dbRestaurantOBJECTSTORE);
       // console.log(store); // testing
@@ -318,21 +318,25 @@ class DBHelper {
    */
   static updateIsFavoriteAPI(restaurantID, is_favorite) {
     let putURL = `${DBHelper.DATABASE_URL}/${restaurantID}/?is_favorite=${is_favorite}`;
-    console.log(`updateIsFavoriteAPI: pre-fetch: ${putURL}`);
+
     /* */
-    return new Promise(function(resolve, reject) {
-      fetch(putURL, {method: 'PUT'})
-      .then(() => {
-        console.log(`updateIsFavoriteAPI: PUT: restaurantID: ${restaurantID} : is_favorite: ${is_favorite}`);
-        resolve(true);
-      })
-      .catch((err) => {
-        console.log(` PUT: restaurantID: ${restaurantID} : is_favorite: ${is_favorite} \n Fetch Error: ${err}`);
-        // most likely offline, in any case put in local storage for later update
-        DBHelper.storeFavoriteTillOnline(restaurantID, putURL);
-      });
-    });
-    /* */
+    if (!navigator.onLine) {
+      console.log(`updateIsFavoriteAPI: You are currently offline! Saving in local storage,`);
+      // put in local storage for later update
+      DBHelper.storeFavoriteTillOnline(restaurantID, putURL);
+    } else {
+      console.log(`updateIsFavoriteAPI: You are currently online. Prepare to fetch! ${putURL}`);
+      return new Promise(function(resolve, reject) {
+        fetch(putURL, {method: 'PUT'})
+          .then(() => {
+            console.log(`updateIsFavoriteAPI: PUT: restaurantID: ${restaurantID} : is_favorite: ${is_favorite}`);
+            resolve(true);
+          })
+          .catch((err) => {
+            console.log(`PUT: restaurantID:${restaurantID} : is_favorite:${is_favorite} \n Fetch Error: ${err}`);
+          });
+        });
+    }
   }
 
   /* -------------------------------------------------------------------------

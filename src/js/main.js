@@ -157,7 +157,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 }
 
 
-/*
+/* ----------------------------------------------------------------------
  * Create restaurant HTML
  * stage 3: added is favorites button
  */
