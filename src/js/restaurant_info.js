@@ -109,7 +109,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 }
 
 
-/*
+/* ----------------------------------------------------------------------
  * images stored in DB server as 1.jpg, 2.jpg, etc
  * DBHelper function returns /img/1.jpg
  * convert to the smallest default image size
@@ -125,7 +125,7 @@ responsiveImgSRC = (restaurant) => {
   return imgSRC;
 }
 
-/*
+/* ----------------------------------------------------------------------
  * build string for responsive images
  *
  *   srcset="/img/1_320px.jpg 320w,    // smallest image available
@@ -227,12 +227,12 @@ createReviewHTML = (review) => {
   return li;
 }
 
-/*
+/* ----------------------------------------------------------------------
  * convert timestamp for date display
  * refer to https://www.w3schools.com/jsref/jsref_obj_date.asp
  * only returns the date string
  *
- * simpler solution example but not much formatting:
+ * simpler solution but not much formatting:
  * console.log(new Date(1504095567183).toLocaleDateString());
  */
 function convertTimeStamp(TimeStamp) {

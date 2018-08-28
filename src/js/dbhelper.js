@@ -69,7 +69,20 @@ class DBHelper {
     });
   }
 
-  /*
+
+  /* ----------------------------------------------------------------------
+   * gets all the retaurant data from IDB
+   */
+  static getAllFromIDB() {
+    return DBHelper.openIDB().then(function(db) {
+      if(!db) return;
+      var store = db.transaction(dbRestaurantOBJECTSTORE).objectStore(dbRestaurantOBJECTSTORE);
+      // console.log(store); // testing
+      return store.getAll();
+    });
+  }
+
+  /* ----------------------------------------------------------------------
    * fetches restaurant data from API and sends it to be stored in IDB
    */
   static getFromAPIsaveToIDB() {
@@ -83,7 +96,7 @@ class DBHelper {
   }
 
 
-  /*
+  /* ----------------------------------------------------------------------
    * takes the restaurant data from the API and stores it in IDB
    */
   static storeAllInIDB(data) {
@@ -100,20 +113,7 @@ class DBHelper {
   }
 
 
-  /*
-   * gets all the retaurant data from IDB
-   */
-  static getAllFromIDB() {
-    return DBHelper.openIDB().then(function(db) {
-      if(!db) return;
-      var store = db.transaction(dbRestaurantOBJECTSTORE).objectStore(dbRestaurantOBJECTSTORE);
-      // console.log(store); // testing
-      return store.getAll();
-    });
-  }
-
-
-  /*
+  /* ----------------------------------------------------------------------
    * Filters the neighborhoods and cuisines that are used in the
    * select lists on main page
    */
@@ -135,10 +135,9 @@ class DBHelper {
   }
 
 
-  /*
+  /* ----------------------------------------------------------------------
    * Fetch all restaurants either from IDB or API
-   * then update vars that hold
-   * cuisines and neighborhoods
+   * then update vars that hold cuisines and neighborhoods
    */
   static fetchRestaurants(callback) {
     return DBHelper.getAllFromIDB().then(restaurants => {
@@ -157,7 +156,7 @@ class DBHelper {
     })
   }
 
-  /*
+  /* ----------------------------------------------------------------------
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -177,7 +176,7 @@ class DBHelper {
   }
 
 
-  /*
+  /* ----------------------------------------------------------------------
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
