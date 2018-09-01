@@ -272,3 +272,108 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+
+/* ----------------------------------------------------------------------------
+ * code to handle user form input for their own reviews
+ *
+ *  showReviewForm - hide or display the form
+ *  checkReviewForm - calls for form validation and creates the JSON object
+ *  validateForm - simple validation of user input
+ *    checkRange - checks input for a range of values
+ *  clearForm - resets the form
+ *    clearErrorMessages - ensures error messages are cleared
+ *  characterCount - tracks character count of user input and displays it
+ *                   to users so they know how much text they can enter
+ */
+function showReviewForm(showORhide) {
+  let displayed = showORhide ? "block" : "none";
+  document.getElementById("review_form").style.display=displayed;
+}
+
+
+function checkReviewForm() {
+  let formData = document.forms.review_form;
+  if (validateForm(formData)) {
+    let uname = formData.name.value;
+    let urating = formData.rating.value;
+    let comments = formData.comments.value;
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // test form - need actual restaurant_id
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let obj = {'restaurant_id': 1, 'name': uname, 'rating': parseInt(urating, 10), 'comments': comments };
+    console.log( JSON.stringify(obj) );
+    clearForm();
+    showReviewForm(false);
+  }
+}
+
+
+function validateForm(formData) {
+  let errors = 0;
+  let labelNameError = document.getElementById("nameError");
+  let labelRatingError = document.getElementById("ratingError");
+  let labelReviewError = document.getElementById("reviewError");
+
+  if(formData.name.value.trim() == "") {
+    labelNameError.innerHTML = "Please enter your name!";
+    ++errors;
+  } else {
+    labelNameError.innerHTML = "";
+  }
+  if(!checkRange(formData.rating.value, 1, 5)) {
+    labelRatingError.innerHTML = "Oops! Invalid rating";
+    ++errors;
+  } else {
+    labelRatingError.innerHTML = "";
+  }
+  if(formData.comments.value.trim() == "") {
+    labelReviewError.innerHTML = "Please enter comments!";
+    ++errors;
+  } else {
+    labelReviewError.innerHTML = "";
+  }
+  if (!errors)
+    return true
+  else
+    return false;
+}
+
+/* ----------------------------------------------------------------------
+ * converts string to an int then checks if for a range of value
+ * adapted from solution found on stack overflow
+ * https://stackoverflow.com/questions/12063070/javascript-validate-numeric-only-and-within-range
+ */
+function checkRange(str, min, max) {
+  num = parseInt(str, 10);
+  return (!isNaN(num) && num >= min && num <= max);
+}
+
+function clearForm() {
+  document.forms.review_form.reset();
+  // any error labels set at this point remain if not cleared
+  clearErrorMessages();
+}
+
+function clearErrorMessages() {
+  let labelNameError = document.getElementById("nameError");
+  let labelRatingError = document.getElementById("ratingError");
+  let labelReviewError = document.getElementById("reviewError");
+  labelNameError.innerHTML = "";
+  labelReviewError.innerHTML = "";
+  labelReviewError.innerHTML = "";
+}
+
+/* ----------------------------------------------------------------------
+ * similar solution found at
+ * https://stackoverflow.com/questions/9767521/count-and-display-number-of-characters-in-a-textbox-using-javascript
+ */
+function characterCount() {
+  let reviewElement = document.getElementById("comments");
+  let maxChars = reviewElement.getAttribute("maxlength");
+  if (!maxChars) maxChars = 512;  // default if not set
+  let numChars = reviewElement.value.length;
+  let charsRemaining = maxChars - numChars;
+  document.getElementById("charCountMsg").innerHTML = `Characters remaining: ${charsRemaining}`;
+}

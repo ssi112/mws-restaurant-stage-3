@@ -53,6 +53,50 @@
 
     <!-- Beginning reviews -->
     <section id="reviews-container" role="region">
+
+      <!-- placement of review form, initiall hidden -->
+      <div class="button">
+        <input type="button" name="show_form" id="showForm" value="Add a review" onclick="showReviewForm(true)"/>
+      </div>
+      <!-- Adapted from: https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Your_first_HTML_form -->
+      <form action="#" method="post" id="review_form" hidden>
+        <div>
+         <label for="name">* Name:</label>
+         <input type="text" id="name" name="user_name">
+         <label class="err" id="nameError"></label>
+        </div>
+        <div>
+         <label for="rating">* Your Rating (1-5):</label>
+         <input type="number" min="1" max="5" value="1" id="rating" name="user_rating">
+         <label class="err" id="ratingError"></label>
+        </div>
+        <div>
+         <label for="comments">* Comments:</label>
+         <textarea id="comments" maxlength="512"
+            onkeyup="characterCount();"
+            onkeydown="characterCount();"
+            onmouseout="characterCount();"
+            oninput="characterCount();"
+            onload="(function(){ formData.comments.value.trim(); })();"
+          placeholder="Help us by entering a review!"
+          name="user_review"></textarea>
+         <label class="err" id="reviewError"></label>
+        </div>
+        <div>
+          <p id="charCountMsg">Characters available: 512</p>
+        </div>
+
+        <div class="button">
+           <input type="button" name="submit_btn" id="btn_id" value="Submit Your review" onclick="checkReviewForm()"/>
+        </div>
+        <div class="button">
+           <input type="button" name="cancel_btn" id="cancelReview" value="Cancel" onclick="(function(){ clearForm(); showReviewForm(false); })();"/>
+        </div>
+      </form>
+
+
+
+      <!-- display of reviews begin here -->
       <ul id="reviews-list"></ul>
     </section>
     <!-- End reviews -->
@@ -72,7 +116,7 @@
   <script type="application/javascript" src="js/idb.js"></script>
   <!-- Database helpers -->
   <script type="text/javascript" src="js/dbhelper.js"></script>
-  <!-- lazy load images -->
+  <!-- lazy load images: https://afarkas.github.io/lazysizes/index.html -->
   <script src="js/lazysizes.min.js" async=""></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
