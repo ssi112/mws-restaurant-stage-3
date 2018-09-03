@@ -347,7 +347,8 @@ class DBHelper {
    */
   static storeFavoriteTillOnline(restaurantID, putURL) {
     console.log(`storeFavoriteTillOnline: ${putURL}`);
-    localStorage.setItem(restaurantID, putURL);
+    // localStorage.setItem(restaurantID, putURL);
+    localStorage.setItem(`${restaurantID}_fav`, putURL);
 
     // add event listener for back online to try again
 
@@ -359,9 +360,42 @@ class DBHelper {
   }
 
 
+  static moveLocalStorageToAPI() {
+    let favURL = "";
+    let revURL = "";
+    let id = 0;
+    let action = "";
+
+    Object.keys(localStorage).forEach( key => {
+      id = key.substring(0, key.indexOf("_"));
+      action = key.substring(key.indexOf("_")+1);
+
+      if (action === "fav") {
+        favURL = localStorage.getItem(key);
+        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${favURL}`);
+        fetch(favURL, {method: 'PUT'});
+      }
+      if (action === "rev") {
+        // !!!!!
+        console.log("NOT READY TO IMPLEMENT!");
+        console.log(localStorage.getItem(key));
+      }
+
+    });
+    // remove items from local storage
+    Object.keys(localStorage).forEach( key => {
+      localStorage.removeItem(key);
+    });
+  }
+
+
   /* -------------------------------------------------------------------------
    * move any data stored in local storage to API
-   */
+   *
+   * keys stored as:
+   *  restaurant_id + underscore + record type (rev=review, fav=favorite)
+   *  example: "1_rev", "10_fav", etc
+   *
   static moveLocalStorageToAPI() {
     let favURL = "";
     Object.keys(localStorage).forEach( key => {
@@ -374,7 +408,7 @@ class DBHelper {
       localStorage.removeItem(key);
     });
   }
-
+  */
 
   /* Used for Mapbox / Leaflet */
   static mapMarkerForRestaurant(restaurant, map) {
