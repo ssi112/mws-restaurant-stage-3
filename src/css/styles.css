@@ -212,7 +212,7 @@ nav h1 a {
 
 .isFavorite:hover {
   color: #000; /* light gray #d3d3d3; */
-  border-color: ##000;
+  border-color: #000;
 }
 
 .isNotFavorite {

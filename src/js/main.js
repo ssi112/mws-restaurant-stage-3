@@ -210,7 +210,7 @@ createRestaurantHTML = (restaurant) => {
       isFavButton.setAttribute("aria-label", "mark this as a favorite");
     }
 
-    // booleans in IDB, fetch/PUT converts them to strings, pain in the arse
+    // booleans in IDB, server API converts them to strings, pain in the arse
     let isFavOrNot = false;
     if(typeof restaurant.is_favorite === 'boolean') {
       // switch it!

@@ -295,6 +295,9 @@ class DBHelper {
    *
    */
    static updateIsFavorite(restaurantID, is_favorite) {
+    let favButton = document.getElementById(`isYourFavorite${restaurantID}`);
+    favButton.disabled = true;   // disable onclick event
+
     // update IDB first
     DBHelper.openIDB()
       .then(function(db) {
@@ -308,6 +311,7 @@ class DBHelper {
       });
     // update the server data...
     DBHelper.updateIsFavoriteAPI(restaurantID, is_favorite);
+    favButton.disabled = false;  // reenable onclick event
   }
 
 
@@ -399,7 +403,6 @@ class DBHelper {
 
   /* ----------------------------------------------------------------------
    * fetches restaurant review data from API and stores it in IDB
-   * NEED TO CATCH IF OFFLINE
    */
   static getReviewsFromAPIsaveToIDB(id) {
     let reviewURL = `${DBHelper.DATABASE_REVIEWS_URL}${id}`;
@@ -457,8 +460,6 @@ class DBHelper {
                 })
             }).catch(error => callback(error, null));
         }
-        // console.log(restReviews);
-        // callback(null, restReviews);
       });
   }
 

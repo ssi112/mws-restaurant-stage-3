@@ -289,6 +289,7 @@ getParameterByName = (name, url) => {
 function showReviewForm(showORhide) {
   let displayed = showORhide ? "block" : "none";
   document.getElementById("review_form").style.display=displayed;
+  document.getElementById("name").focus();  // put focus on name field
 }
 
 
@@ -300,10 +301,12 @@ function checkReviewForm() {
     let comments = formData.comments.value;
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // test form - need actual restaurant_id
+    // test form -
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    let obj = {'restaurant_id': 1, 'name': uname, 'rating': parseInt(urating, 10), 'comments': comments };
-    console.log( JSON.stringify(obj) );
+    restaurant = self.restaurant;
+    let obj = {'restaurant_id': restaurant.id, 'name': uname, 'rating': parseInt(urating, 10), 'comments': comments };
+    localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
+    console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
     clearForm();
     showReviewForm(false);
   }
