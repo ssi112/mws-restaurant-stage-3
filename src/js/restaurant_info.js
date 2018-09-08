@@ -163,9 +163,9 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   }
 }
 
-/**
+/* ----------------------------------------------------------------------
  * Create all reviews HTML and add them to the webpage
- *
+ *  added descending sort to display reviews
  * called by fillRestaurantHTML
  */
 fillReviewsHTML = (error, reviews = self.restaurant.reviews) => {
@@ -237,9 +237,24 @@ createReviewHTML = (review) => {
   comments.className = 'rating-comments';
   comments.innerHTML = review.comments;
   li.appendChild(comments);
-
   return li;
 }
+
+
+/* ----------------------------------------------------------------------
+ * takes the review just created and updates this page
+ * puts the new review 1st
+ * reviews-container is a section id
+ * reviews-list is a ul
+ * createReviewHTML returns a li to be appended as first child
+ */
+addNewReviewToPage = (newReviewObj) => {
+  let reviewContainer = document.getElementById("reviews-container");
+  let reviewList = document.getElementById("reviews-list");
+  // insert the new node (newReviewObj) before the reference node (1st child)
+  reviewList.insertBefore(createReviewHTML(newReviewObj), reviewList.firstChild);
+}
+
 
 /* ----------------------------------------------------------------------
  * convert timestamp for date display
@@ -318,19 +333,18 @@ function checkReviewForm() {
     // test form -
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     restaurant = self.restaurant;
+    let cuDate = new Date();
     let obj = {'restaurant_id': restaurant.id,
                'name': uname,
                'rating': parseInt(urating, 10),
                'comments': comments,
-               'createdAt': new Date() };
-    //
+               'createdAt': cuDate,
+               'updatedAt': cuDate };
+    // store the review in API & IDB or local storage if offline
     DBHelper.putReviewInAPI(obj);
-
-    // localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
-    // console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
-
-    clearForm();
-    showReviewForm(false);
+    clearForm();  // reset the input form
+    showReviewForm(false);  // hide it
+    addNewReviewToPage(obj);  // add the review to this page
   }
 }
 

@@ -64,7 +64,6 @@ class DBHelper {
           var reviewStore = upgradeDb.createObjectStore(dbReviewsOBJECTSTORE, { keyPath: 'id' });
           reviewStore.createIndex('reviewID', 'id');
           reviewStore.createIndex('restID', 'restaurant_id');
-          reviewStore.createIndex('updatedAt', 'updatedAt'); // so can pull in desc order
         }
       } // switch
     });
@@ -348,11 +347,9 @@ class DBHelper {
    */
   static storeFavoriteTillOnline(restaurantID, putURL) {
     console.log(`storeFavoriteTillOnline: ${putURL}`);
-    // localStorage.setItem(restaurantID, putURL);
     localStorage.setItem(`${restaurantID}_fav`, putURL);
 
     // add event listener for back online to try again
-
     window.addEventListener('online', event => {
       console.log('online event, yay!');
       // get from local storage and update API
@@ -518,9 +515,15 @@ class DBHelper {
     // if offline put review in local storage else post it!
     if (!navigator.onLine) {
       console.log(`putReviewInAPI: You are currently offline! Saving in local storage,`);
+
+
       // put in local storage for later update
+      // localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
+      // console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
+
       // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      // DBHelper.storeFavoriteTillOnline(restaurantID, putURL); WRITE THIS!!
+      // storeFavoriteTillOnline
+      // moveLocalStorageToAPI
       // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     } else {
       // console.log(`putReviewInAPI: You are currently online. Prepare to POST! ${fetchPostURL}`);
