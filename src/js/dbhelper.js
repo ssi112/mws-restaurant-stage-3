@@ -380,9 +380,9 @@ class DBHelper {
         fetch(favURL, {method: 'PUT'});
       }
       if (action === "rev") {
-        // !!!!!
-        console.log("NOT READY TO IMPLEMENT!");
-        console.log(localStorage.getItem(key));
+        revURL = localStorage.getItem(key);
+        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${favURL}`);
+        DBHelper.putReviewInAPI(JSON.parse(revURL));
       }
 
     });
@@ -515,28 +515,20 @@ class DBHelper {
     // if offline put review in local storage else post it!
     if (!navigator.onLine) {
       console.log(`putReviewInAPI: You are currently offline! Saving in local storage,`);
-
-
       // put in local storage for later update
-      // localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
-      // console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
-
-      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      // storeFavoriteTillOnline
-      // moveLocalStorageToAPI
-      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(reviewObject));
+      // add event listener for when we are back online
+      window.addEventListener('online', event => {
+        console.log(`putReviewInAPI: back online calling moveLocalStorageToAPI`);
+        DBHelper.moveLocalStorageToAPI();
+      });
     } else {
-      // console.log(`putReviewInAPI: You are currently online. Prepare to POST! ${fetchPostURL}`);
-      console.log(`putReviewInAPI: JSON.stringify(reviewObject):${JSON.stringify(reviewObject)}`);
-      console.log("-----------------------------------------------------------");
       fetch(fetchPostURL, postOptions)
         .then(res => res.json())
         .then(response => {
           let newReviewCreatedAt = response.createdAt;
           let newReviewID = response.id;
-          // reviewResponseObj = response.clone();
           console.log(`putReviewInAPI: Response: ${JSON.stringify(response)}`);
-          console.log(`putReviewInAPI: Review ID: ${newReviewID} Created At: ${newReviewCreatedAt}`);
           DBHelper.openIDB()
             .then(function(db) {
               let tx = db.transaction(dbReviewsOBJECTSTORE, 'readwrite');
