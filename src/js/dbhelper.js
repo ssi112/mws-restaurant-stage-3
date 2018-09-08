@@ -64,6 +64,7 @@ class DBHelper {
           var reviewStore = upgradeDb.createObjectStore(dbReviewsOBJECTSTORE, { keyPath: 'id' });
           reviewStore.createIndex('reviewID', 'id');
           reviewStore.createIndex('restID', 'restaurant_id');
+          reviewStore.createIndex('updatedAt', 'updatedAt'); // so can pull in desc order
         }
       } // switch
     });
@@ -359,7 +360,13 @@ class DBHelper {
     });
   }
 
-
+  /* -------------------------------------------------------------------------
+   * move any data stored in local storage to API
+   *
+   * keys stored as:
+   *  restaurant_id + underscore + record type (rev=review, fav=favorite)
+   *  example: "1_rev", "10_fav", etc
+   */
   static moveLocalStorageToAPI() {
     let favURL = "";
     let revURL = "";
@@ -382,33 +389,12 @@ class DBHelper {
       }
 
     });
-    // remove items from local storage
+    // remove all items from local storage
     Object.keys(localStorage).forEach( key => {
       localStorage.removeItem(key);
     });
   }
 
-
-  /* -------------------------------------------------------------------------
-   * move any data stored in local storage to API
-   *
-   * keys stored as:
-   *  restaurant_id + underscore + record type (rev=review, fav=favorite)
-   *  example: "1_rev", "10_fav", etc
-   *
-  static moveLocalStorageToAPI() {
-    let favURL = "";
-    Object.keys(localStorage).forEach( key => {
-      favURL = localStorage.getItem(key);
-      console.log(favURL);
-      fetch(favURL, {method: 'PUT'});
-    });
-    // remove items from local storage
-    Object.keys(localStorage).forEach( key => {
-      localStorage.removeItem(key);
-    });
-  }
-  */
 
   /* Used for Mapbox / Leaflet */
   static mapMarkerForRestaurant(restaurant, map) {
@@ -511,6 +497,60 @@ class DBHelper {
       return restIDIdx.getAll(restaurant_id);
     });
   }
+
+
+  /* ==========================================================================
+   * called from restaurant_info.js checkReviewForm()
+   * receives review object
+   * Create a new restaurant review: http://localhost:1337/reviews/
+   * if successful in posting review to API then stores it in IDB
+   *
+   */
+  static putReviewInAPI(reviewObject) {
+    let postOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          // header and body type must match
+          body: JSON.stringify(reviewObject)
+    };
+    let fetchPostURL = "http://localhost:1337/reviews/";
+
+    // if offline put review in local storage else post it!
+    if (!navigator.onLine) {
+      console.log(`putReviewInAPI: You are currently offline! Saving in local storage,`);
+      // put in local storage for later update
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      // DBHelper.storeFavoriteTillOnline(restaurantID, putURL); WRITE THIS!!
+      // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    } else {
+      // console.log(`putReviewInAPI: You are currently online. Prepare to POST! ${fetchPostURL}`);
+      console.log(`putReviewInAPI: JSON.stringify(reviewObject):${JSON.stringify(reviewObject)}`);
+      console.log("-----------------------------------------------------------");
+      fetch(fetchPostURL, postOptions)
+        .then(res => res.json())
+        .then(response => {
+          let newReviewCreatedAt = response.createdAt;
+          let newReviewID = response.id;
+          // reviewResponseObj = response.clone();
+          console.log(`putReviewInAPI: Response: ${JSON.stringify(response)}`);
+          console.log(`putReviewInAPI: Review ID: ${newReviewID} Created At: ${newReviewCreatedAt}`);
+          DBHelper.openIDB()
+            .then(function(db) {
+              let tx = db.transaction(dbReviewsOBJECTSTORE, 'readwrite');
+              let store = tx.objectStore(dbReviewsOBJECTSTORE);
+              console.log(`putReviewInIDB: ${JSON.stringify(response)}`);
+              store.put(response);
+            })
+            .catch(error => {
+              console.log(`putReviewInIDB: ${error}`);
+            });
+        })
+        .catch(err => {
+          console.log(`putReviewInAPI: POST: ${JSON.stringify(reviewObject)} \n Fetch Error: ${err}`);
+        });
+    }
+  }
+
 
 } // end class DBHelper
 self.DBHelper = DBHelper;

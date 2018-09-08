@@ -185,6 +185,20 @@ fillReviewsHTML = (error, reviews = self.restaurant.reviews) => {
     container.appendChild(noReviews);
     return;
   }
+
+  // sort by descending date
+  // see here for explanation on sorting objects:
+  //    https://davidwalsh.name/array-sort
+  // see also this for sort info
+  //    https://www.w3schools.com/js/js_array_sort.asp
+  reviews.sort(function(obj1, obj2) {
+    // put dates in a consistent format
+    obj2.updateDate = new Date(obj2.updatedAt);
+    obj1.updateDate = new Date(obj1.updatedAt);
+    // reversing objects will put them in ascending order
+    return obj2.updateDate - obj1.updateDate;
+  });
+
   const ul = document.getElementById('reviews-list');
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
@@ -304,9 +318,17 @@ function checkReviewForm() {
     // test form -
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     restaurant = self.restaurant;
-    let obj = {'restaurant_id': restaurant.id, 'name': uname, 'rating': parseInt(urating, 10), 'comments': comments };
-    localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
-    console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
+    let obj = {'restaurant_id': restaurant.id,
+               'name': uname,
+               'rating': parseInt(urating, 10),
+               'comments': comments,
+               'createdAt': new Date() };
+    //
+    DBHelper.putReviewInAPI(obj);
+
+    // localStorage.setItem(`${restaurant.id}_rev`, JSON.stringify(obj));
+    // console.log(`${restaurant.id}_rev`, JSON.stringify(obj) );
+
     clearForm();
     showReviewForm(false);
   }
