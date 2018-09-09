@@ -381,7 +381,7 @@ class DBHelper {
       }
       if (action === "rev") {
         revURL = localStorage.getItem(key);
-        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${favURL}`);
+        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${revURL}`);
         DBHelper.putReviewInAPI(JSON.parse(revURL));
       }
 
@@ -526,8 +526,10 @@ class DBHelper {
       fetch(fetchPostURL, postOptions)
         .then(res => res.json())
         .then(response => {
+          /* ---- not needed for testing ----
           let newReviewCreatedAt = response.createdAt;
           let newReviewID = response.id;
+          */
           console.log(`putReviewInAPI: Response: ${JSON.stringify(response)}`);
           DBHelper.openIDB()
             .then(function(db) {
@@ -545,7 +547,6 @@ class DBHelper {
         });
     }
   }
-
 
 } // end class DBHelper
 self.DBHelper = DBHelper;

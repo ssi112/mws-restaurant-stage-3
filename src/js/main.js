@@ -11,6 +11,12 @@ var apiKey = config.MapBoxKey;
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   window.initMap(); // added
+  // turn on/off the offline message
+  if (!navigator.onLine) {
+    document.getElementById("offline").style.display = "block";
+  } else {
+    document.getElementById("offline").style.display = "none";
+  }
   fetchNeighborhoods();
   fetchCuisines();
 });
@@ -94,8 +100,9 @@ initMap = () => {
 }
 
 
-/**
- * Update page and map for current restaurants.
+/* ---------------------------------------------------------------------------
+ * Update page and map for current restaurants
+ *
  */
 updateRestaurants = () => {
   const cSelect = document.getElementById('cuisines-select');
@@ -226,9 +233,9 @@ createRestaurantHTML = (restaurant) => {
   };
 
   li.append(isFavButton);
-
   return li;
 }
+
 
 /* -----------------------------------------------------------------------
  * creates the is favorite button
@@ -269,7 +276,6 @@ defaultImgSRC = (restaurant) => {
   let imgSRC = DBHelper.imageUrlForRestaurant(restaurant);
   let position = imgSRC.indexOf(".jpg");
   imgSRC = imgSRC.slice(0, position) + '_320px' + imgSRC.slice(position);
-  // testing
   // console.log(`defaultImgSRC:imgSRC: ${imgSRC}`);
   return imgSRC;
 }

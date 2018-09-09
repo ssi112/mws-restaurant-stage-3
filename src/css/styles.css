@@ -28,7 +28,7 @@ ul, li {
 }
 
 a {
-	color: orange;
+	color: #00008B;
 	text-decoration: none;
 }
 
@@ -77,6 +77,16 @@ header {
    font-size: 0.75em;
    padding: 25px;
    text-align: center;
+}
+
+#footer a {
+  color: #FFFFFF;
+  text-decoration: underline;
+}
+
+#footer a:hover, a:focus, a:visited  {
+  color: #3397db;
+  text-decoration: underline;
 }
 
 /* ====================== Navigation ====================== */
@@ -243,7 +253,7 @@ nav h1 a {
 }
 
 #restaurant-name {
-   color: #f18200;
+   color: black;
    font-family: Arial,sans-serif;
    font-size: 20pt;
    font-weight: 200;
@@ -376,6 +386,19 @@ label {
 .err {
   color: red;
   text-align: left;
+  width: auto;
+}
+
+#offline {
+  margin: 10px auto;
+  /* width: calc(100% - 500px); */
+  width: 100%;
+}
+
+.offlineMsg {
+  color: red;
+  text-align: center;
+  /* font-weight: bold; */
   width: auto;
 }
 

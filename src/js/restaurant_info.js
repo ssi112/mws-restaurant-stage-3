@@ -317,6 +317,13 @@ getParameterByName = (name, url) => {
  */
 function showReviewForm(showORhide) {
   let displayed = showORhide ? "block" : "none";
+  // turn on/off the offline message
+  if (!navigator.onLine) {
+    document.getElementById("offline").style.display = "block";
+  } else {
+    document.getElementById("offline").style.display = "none";
+  }
+  // now display the form
   document.getElementById("review_form").style.display=displayed;
   document.getElementById("name").focus();  // put focus on name field
 }
@@ -328,10 +335,6 @@ function checkReviewForm() {
     let uname = formData.name.value;
     let urating = formData.rating.value;
     let comments = formData.comments.value;
-
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // test form -
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     restaurant = self.restaurant;
     let cuDate = new Date();
     let obj = {'restaurant_id': restaurant.id,
