@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
   window.initMap();
 });
 
+window.onload = function() {
+  // check if anything is in local storage waiting to update
+  if (navigator.onLine) {
+    DBHelper.moveLocalStorageToAPI();
+  }
+}
+
 /*
  * Initialize leaflet map
  */

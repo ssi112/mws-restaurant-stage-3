@@ -21,6 +21,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchCuisines();
 });
 
+window.onload = function() {
+  // check if anything is in local storage waiting to update
+  if (navigator.onLine) {
+    DBHelper.moveLocalStorageToAPI();
+  }
+};
+
 /**
  * Fetch all neighborhoods and set their HTML.
  */

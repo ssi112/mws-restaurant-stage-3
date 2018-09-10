@@ -2,6 +2,48 @@
 ---
 #### _Three Stage Course Material Project - Restaurant Reviews_
 
+
+### Requirements
+
+**Add a form to allow users to create their own reviews:** In previous versions of the application, users could only read reviews from the database. You will need to add a form that adds new reviews to the database. The form should include the user’s name, the restaurant id, the user’s rating, and whatever comments they have. Submitting the form should update the server when the user is online.
+
+**Add functionality to defer updates until the user is connected:** If the user is not online, the app should notify the user that they are not connected, and save the users' data to submit automatically when re-connected. In this case, the review should be deferred and sent to the server when connection is re-established (but the review should still be visible locally even before it gets to the server.)
+
+**Meet the new performance requirements:** In addition to adding new features, the performance targets you met in Stage Two have tightened. Using Lighthouse, you’ll need to measure your site performance against the new targets.
+
+[Lighthouse](https://developers.google.com/web/tools/lighthouse/) measures performance in four areas, but your review will focus on three:
+
+ - Progressive Web App score should be at 90 or better.
+ - Performance score should be at 90 or better.
+ - Accessibility score should be at 90 or better.
+
+---
+## Project Overview: Stage 2
+For the Restaurant Reviews projects, you will incrementally convert a static webpage to a mobile-ready web application. In Stage Two, you will take the responsive, accessible design you built in Stage One and connect it to an external server. You’ll begin by using asynchronous JavaScript to request JSON data from the server. You’ll store data received from the server in an offline database using IndexedDB, which will create an app shell architecture. Finally, you’ll work to optimize your site to meet performance benchmarks, which you’ll test using Lighthouse.
+
+- Converted to pull data from external Sails server
+- Added use of IndexedDB to store JSON data for offline first, network second
+- *Note using J. Archibald's IndexedDB Promise library*
+- Added favicon.ico
+- Added manifest.json plus icons for PWA
+
+**Lighthouse Audit Score - Minimum Specifications**
+- PWA > 90
+- Performance > 70
+- Accessibility > 90
+
+**Lighthouse Audit Settings**
+Using Chrome Canary - Disable all extensions or use Incognito window
+   1. Device: Mobile
+   2. Audits: Performance, Progressive Web App, Accessibility
+   3. Throttling: Simulated Fast 3G, 4x CPU Slowdown
+
+**Audit Results Using Above**
+- PWA = 92
+- Performance =  92
+- Accessibility = 97
+
+---
 ## Project Overview: Stage 1
 
 For the **Restaurant Reviews** projects, you will incrementally convert a static webpage to a mobile-ready web application. In **Stage One**, you will take a static design that lacks accessibility and convert the design to be responsive on different sized displays and accessible for screen reader use. You will also add a service worker to begin the process of creating a seamless offline experience for your users.
@@ -44,33 +86,5 @@ Additional info on [creating config.js](https://gist.github.com/derzorngottes/3b
 
 *Be certain to add config.js to the .gitignore file*
 
-## Project Overview: Stage 2
-For the Restaurant Reviews projects, you will incrementally convert a static webpage to a mobile-ready web application. In Stage Two, you will take the responsive, accessible design you built in Stage One and connect it to an external server. You’ll begin by using asynchronous JavaScript to request JSON data from the server. You’ll store data received from the server in an offline database using IndexedDB, which will create an app shell architecture. Finally, you’ll work to optimize your site to meet performance benchmarks, which you’ll test using Lighthouse.
 
-- Converted to pull data from external Sails server
-- Added use of IndexedDB to store JSON data for offline first, network second
-- *Note using J. Archibald's IndexedDB Promise library*
-- Added favicon.ico
-- Added manifest.json plus icons for PWA
-
-**Lighthouse Audit Score - Minimum Specifications**
-- PWA > 90
-- Performance > 70
-- Accessibility > 90
-
-**Lighthouse Audit Settings**
-Using Chrome Canary - Disable all extensions or use Incognito window
-   1. Device: Mobile
-   2. Audits: Performance, Progressive Web App, Accessibility
-   3. Throttling: Simulated Fast 3G, 4x CPU Slowdown
-
-**Audit Results Using Above**
-- PWA = 92
-- Performance =  92
-- Accessibility = 97
-
-If No throttling chosen the scores results are as follows:
-- PWA = 92
-- Performance =  100
-- Accessibility = 97
 

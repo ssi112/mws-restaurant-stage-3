@@ -376,12 +376,12 @@ class DBHelper {
 
       if (action === "fav") {
         favURL = localStorage.getItem(key);
-        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${favURL}`);
+        // console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${favURL}`);
         fetch(favURL, {method: 'PUT'});
       }
       if (action === "rev") {
         revURL = localStorage.getItem(key);
-        console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${revURL}`);
+        // console.log(`moveLocalStorageToAPI:id=${id} action=${action} ${revURL}`);
         DBHelper.putReviewInAPI(JSON.parse(revURL));
       }
 
@@ -412,9 +412,11 @@ class DBHelper {
    * ----------------------------------------------------------------------
    */
    static getAndStoreAllReviews(allRestaurantIDs) {
-    allRestaurantIDs.forEach( id => {
-      DBHelper.getReviewsFromAPIsaveToIDB(id);
-    });
+    if (navigator.onLine) { // no point in updating if we're not online
+      allRestaurantIDs.forEach( id => {
+        DBHelper.getReviewsFromAPIsaveToIDB(id);
+      });
+    }
    }
 
 
@@ -526,11 +528,7 @@ class DBHelper {
       fetch(fetchPostURL, postOptions)
         .then(res => res.json())
         .then(response => {
-          /* ---- not needed for testing ----
-          let newReviewCreatedAt = response.createdAt;
-          let newReviewID = response.id;
-          */
-          console.log(`putReviewInAPI: Response: ${JSON.stringify(response)}`);
+          //console.log(`putReviewInAPI: Response: ${JSON.stringify(response)}`);
           DBHelper.openIDB()
             .then(function(db) {
               let tx = db.transaction(dbReviewsOBJECTSTORE, 'readwrite');

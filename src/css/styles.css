@@ -393,6 +393,7 @@ label {
   margin: 10px auto;
   /* width: calc(100% - 500px); */
   width: 100%;
+  text-align: center;
 }
 
 .offlineMsg {
