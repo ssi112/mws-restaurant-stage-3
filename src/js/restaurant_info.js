@@ -9,6 +9,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
   window.initMap();
 });
 
+window.addEventListener('load', function() {
+  function updateOnlineStatus(event) {
+    var condition = navigator.onLine ? "online" : "offline";
+    // turn on/off the offline message
+    if (condition === "offline") {
+      document.getElementById("offline").style.display = "block";
+    } else {
+      document.getElementById("offline").style.display = "none";
+    }
+  }
+  window.addEventListener('online',  updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+});
+
 window.onload = function() {
   // check if anything is in local storage waiting to update
   if (navigator.onLine) {
@@ -324,13 +338,7 @@ getParameterByName = (name, url) => {
  */
 function showReviewForm(showORhide) {
   let displayed = showORhide ? "block" : "none";
-  // turn on/off the offline message
-  if (!navigator.onLine) {
-    document.getElementById("offline").style.display = "block";
-  } else {
-    document.getElementById("offline").style.display = "none";
-  }
-  // now display the form
+  // display the form
   document.getElementById("review_form").style.display=displayed;
   document.getElementById("name").focus();  // put focus on name field
 }

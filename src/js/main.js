@@ -11,14 +11,22 @@ var apiKey = config.MapBoxKey;
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   window.initMap(); // added
-  // turn on/off the offline message
-  if (!navigator.onLine) {
-    document.getElementById("offline").style.display = "block";
-  } else {
-    document.getElementById("offline").style.display = "none";
-  }
   fetchNeighborhoods();
   fetchCuisines();
+});
+
+window.addEventListener('load', function() {
+  function updateOnlineStatus(event) {
+    var condition = navigator.onLine ? "online" : "offline";
+    // turn on/off the offline message
+    if (condition === "offline") {
+      document.getElementById("offline").style.display = "block";
+    } else {
+      document.getElementById("offline").style.display = "none";
+    }
+  }
+  window.addEventListener('online',  updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
 });
 
 window.onload = function() {
